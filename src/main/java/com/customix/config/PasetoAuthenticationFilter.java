@@ -28,8 +28,10 @@ public class PasetoAuthenticationFilter extends OncePerRequestFilter {
 
         String authorization = request.getHeader("Authorization");
 
-        if (Objects.isNull(authorization) || !authorization.startsWith("Bearer "))
+        if (Objects.isNull(authorization) || !authorization.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
+            return;
+        }
 
         String token = authorization.substring(7);
 
