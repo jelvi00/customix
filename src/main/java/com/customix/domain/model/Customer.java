@@ -29,6 +29,7 @@ public class Customer extends Audit<String> {
     private String email;
 
     @OneToMany(mappedBy = "customer")
+    @Builder.Default
     private List<Address> addresses = new ArrayList<>();
 
     public CustomerDTO.Response toDTOResponse() {
