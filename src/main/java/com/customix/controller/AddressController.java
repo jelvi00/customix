@@ -6,6 +6,7 @@ import com.customix.domain.service.AddressService;
 import com.customix.dto.AddressDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,10 +58,9 @@ public class AddressController {
 
         var address = addressService.addAddress(request);
 
-        return ResponseEntity.ok(Objects.isNull(address)
-                ? null
-                : address.toDTOResponse()
-        );
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(address.toDTOResponse());
     }
 
     @PutMapping()

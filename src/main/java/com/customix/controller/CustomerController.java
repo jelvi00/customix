@@ -6,6 +6,7 @@ import com.customix.domain.service.CustomerService;
 import com.customix.dto.CustomerDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,10 +54,13 @@ public class CustomerController {
 
         var customer = customerService.addCustomer(request);
 
-        return ResponseEntity.ok(Objects.isNull(customer)
-                ? null
-                : customer.toDTOResponse()
-        );
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(
+                        Objects.isNull(customer)
+                                ? null
+                                : customer.toDTOResponse()
+                );
     }
 
     @PutMapping()

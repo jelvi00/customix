@@ -5,6 +5,7 @@ import com.customix.dto.LoginDTO;
 import com.customix.dto.RegistrationDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +25,10 @@ public class AuthController {
     public ResponseEntity<RegistrationDTO.Response> register(@Valid @RequestBody RegistrationDTO.Request request) {
 
         if (Objects.isNull(request)) throw new IllegalArgumentException();
-        return ResponseEntity.ok(authService.register(request));
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(authService.register(request));
     }
 
     @PostMapping("/login")
