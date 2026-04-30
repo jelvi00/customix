@@ -37,7 +37,7 @@ public class AuthControllerITest extends ControllerIT {
 
     @AfterEach
     void tearDown() {
-        userRepo.deleteAll();
+        userRepo.deleteAllInBatch();
     }
 
     @Test
