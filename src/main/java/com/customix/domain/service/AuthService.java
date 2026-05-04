@@ -1,6 +1,6 @@
 package com.customix.domain.service;
 
-import com.customix.config.PasetoManager;
+import com.customix.config.security.PasetoManager;
 import com.customix.domain.enums.Role;
 import com.customix.domain.enums.Status;
 import com.customix.domain.model.User;

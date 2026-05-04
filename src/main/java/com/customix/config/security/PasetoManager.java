@@ -1,4 +1,4 @@
-package com.customix.config;
+package com.customix.config.security;
 
 
 import org.paseto4j.commons.SecretKey;
@@ -35,13 +35,9 @@ public class PasetoManager {
             int braceIndex = afterSub.indexOf("}");
 
             int endIndex;
-            if (commaIndex == -1) {
-                endIndex = braceIndex;
-            } else if (braceIndex == -1) {
-                endIndex = commaIndex;
-            } else {
-                endIndex = Math.min(commaIndex, braceIndex);
-            }
+            if (commaIndex == -1) endIndex = braceIndex;
+            else if (braceIndex == -1) endIndex = commaIndex;
+            else endIndex = Math.min(commaIndex, braceIndex);
 
             if (endIndex == -1) return null;
             return afterSub.substring(0, endIndex);
