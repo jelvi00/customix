@@ -4,7 +4,9 @@ import com.customix.dto.AddressDTO;
 import com.customix.dto.CustomerDTO;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -38,12 +40,17 @@ public class Address extends Audit<String> {
     private Customer customer;
 
     public AddressDTO.Response toDTOResponse() {
+
+        var customerDTO = !Hibernate.isInitialized(customer)
+                ? null
+                : new CustomerDTO.Response(
+                customer.getId(), customer.getName(), customer.getEmail(),
+                customer.getStatus().toString(), null
+        );
+
         return new AddressDTO.Response(
                 id, street, city, country, postalCode,
-                getStatus().toString(),
-                new CustomerDTO.Response(
-                        customer.getId(), customer.getName(), customer.getEmail(),
-                        customer.getStatus().toString(), null
-                ));
+                getStatus().toString(), customerDTO
+        );
     }
 }

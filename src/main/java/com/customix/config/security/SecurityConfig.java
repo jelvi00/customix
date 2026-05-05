@@ -40,7 +40,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-                .authenticationManager(authManager)
                 .addFilterBefore(pasetoAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

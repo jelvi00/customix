@@ -4,6 +4,7 @@ import com.customix.dto.AddressDTO;
 import com.customix.dto.CustomerDTO;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ public class Customer extends Audit<String> {
 
     public CustomerDTO.Response toDTOResponse() {
 
-        var addressList = Objects.isNull(addresses) || addresses.isEmpty()
+        var addressList = !Hibernate.isInitialized(addresses) || addresses.isEmpty()
                 ? null
                 : addresses.stream().map((address) -> new AddressDTO.Response(
                 address.getId(), address.getStreet(), address.getCity(), address.getCountry(),
