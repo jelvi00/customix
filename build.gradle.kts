@@ -3,6 +3,7 @@ plugins {
     id("jacoco")
     id("org.springframework.boot") version "3.5.14"
     id("io.spring.dependency-management") version "1.1.7"
+    id("org.graalvm.buildtools.native") version "1.1.0"
 }
 
 repositories {
@@ -11,6 +12,22 @@ repositories {
 
 group = "com.customix"
 version = "1.0-SNAPSHOT"
+
+springBoot {
+    mainClass.set("com.customix.Application")
+}
+
+graalvmNative {
+    binaries {
+        named("main") {
+            imageName.set("customix-api")
+            mainClass.set("com.customix.Application")
+
+            // Optional: Pass arguments to the native-image tool
+            buildArgs.addAll("--no-fallback", "--verbose")
+        }
+    }
+}
 
 dependencies {
 
