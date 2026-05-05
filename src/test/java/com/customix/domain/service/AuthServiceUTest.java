@@ -11,7 +11,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
@@ -34,6 +36,9 @@ public class AuthServiceUTest {
 
     @Mock
     private PasetoManager pasetoManager;
+
+    @Mock
+    private AuthenticationManager authManager;
 
     @InjectMocks
     private AuthService authService;
@@ -86,7 +91,7 @@ public class AuthServiceUTest {
     @DisplayName("Given instantiation, then instance obtained")
     void givenInstantiation_ThenInstanceObtained() {
 
-        var service = new AuthService(userRepo, passwordEncoder, pasetoManager);
+        var service = new AuthService(userRepo, passwordEncoder, pasetoManager, authManager);
         assertNotNull(service);
 
     }
@@ -147,8 +152,7 @@ public class AuthServiceUTest {
     @DisplayName("Given logging in, when username and password are correct, then successfully logged in")
     void givenLoggingIn_whenUsernameAndPasswordAreCorrect_thenSuccessfullyLoggedIn() {
 
-        when(userRepo.findByUsernameAndStatus(anyString(), any())).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
+        when(authManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(new UsernamePasswordAuthenticationToken(testUser, null));
         when(pasetoManager.createToken(anyString())).thenReturn("token");
 
         var loggedIn = authService.login(testLoginRequest.username(), testLoginRequest.password());
@@ -163,8 +167,8 @@ public class AuthServiceUTest {
     @DisplayName("Given logging in, when username is missing, then exception is thrown")
     void givenLoggingIn_whenUsernameIsMissing_thenExceptionIsThrown() {
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> authService.login(null, "password"));
-        assertEquals("Username or password is missing.", exception.getMessage());
+        Exception exception = assertThrows(BadCredentialsException.class, () -> authService.login(null, "password"));
+        assertEquals("Username or password is incorrect.", exception.getMessage());
 
     }
 
@@ -172,38 +176,8 @@ public class AuthServiceUTest {
     @DisplayName("Given logging in, when password is missing, then exception is thrown")
     void givenLoggingIn_whenPasswordIsMissing_thenExceptionIsThrown() {
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> authService.login("user", null));
-        assertEquals("Username or password is missing.", exception.getMessage());
-
-    }
-
-    @Test
-    @DisplayName("Given logging in, when no enabled user by username found, then exception is thrown")
-    void givenLoggingIn_whenNoEnabledUserByUsernameFound_thenExceptionIsThrown() {
-
-        when(userRepo.findByUsernameAndStatus(anyString(), any())).thenReturn(Optional.empty());
-
-        Exception exception = assertThrows(
-                BadCredentialsException.class,
-                () -> authService.login(testLoginRequest.username(), testLoginRequest.password())
-        );
+        Exception exception = assertThrows(BadCredentialsException.class, () -> authService.login("user", null));
         assertEquals("Username or password is incorrect.", exception.getMessage());
-
-    }
-
-    @Test
-    @DisplayName("Given logging in, when passwords not matching, then exception is thrown")
-    void givenLoggingIn_whenPasswordsNotMatching_thenExceptionIsThrown() {
-
-        when(userRepo.findByUsernameAndStatus(anyString(), any())).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
-
-        Exception exception = assertThrows(
-                BadCredentialsException.class,
-                () -> authService.login(testLoginRequest.username(), testLoginRequest.password())
-        );
-        assertEquals("Username or password is incorrect.", exception.getMessage());
-
 
     }
 
