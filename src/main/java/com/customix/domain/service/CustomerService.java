@@ -5,6 +5,8 @@ import com.customix.domain.model.Customer;
 import com.customix.domain.repo.CustomerRepo;
 import com.customix.dto.CustomerDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,6 +20,14 @@ public class CustomerService {
     public List<Customer> getAllCustomers(Optional<Collection<Status>> statuses) {
 
         return customerRepo.findAllByStatusIn(statuses.orElse(Collections.singleton(Status.ENABLED)));
+
+    }
+
+    public List<Customer> getCustomersPaged(int page, int size) {
+
+        return customerRepo.findAll(
+                PageRequest.of(page, size, Sort.by("status").descending())
+        ).getContent();
 
     }
 

@@ -39,6 +39,21 @@ public class CustomerController {
 
     }
 
+    @GetMapping("/paged")
+    public ResponseEntity<List<CustomerDTO.Response>> getCustomersPaged(
+            @RequestParam("page") Integer page,
+            @RequestParam("size") Integer size
+            ) {
+
+        var customers = customerService.getCustomersPaged(page, size);
+
+        return ResponseEntity.ok(customers.isEmpty()
+                ? Collections.emptyList()
+                : customers.stream().map(Customer::toDTOResponse).toList()
+        );
+
+    }
+
     @GetMapping("/{id}/detail")
     public ResponseEntity<CustomerDTO.Response> getCustomer(@PathVariable String id) {
 
