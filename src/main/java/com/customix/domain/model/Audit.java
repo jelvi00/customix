@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
-public abstract class Audit<T> {
+public abstract sealed class Audit<T> permits Address, Customer, User {
 
     @Enumerated
     @Column(nullable = false)

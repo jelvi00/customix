@@ -20,8 +20,13 @@ public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> handleMissingBody(HttpMessageNotReadableException ex) {
-        return ResponseEntity.status(400).body("Provided request is invalid.");
+    public ResponseEntity<ProblemDetail> handleMissingBody(HttpMessageNotReadableException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ProblemDetail.forStatusAndDetail(
+                        HttpStatus.BAD_REQUEST,
+                        "Provided request is invalid."
+                )
+        );
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

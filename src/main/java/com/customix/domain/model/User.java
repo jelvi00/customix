@@ -18,7 +18,7 @@ import java.util.UUID;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Builder
-public class User extends Audit<String> implements UserDetails {
+public final class User extends Audit<String> implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
